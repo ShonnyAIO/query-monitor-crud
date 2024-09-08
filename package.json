@@ -1,0 +1,29 @@
+{
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.3",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "morgan": "^1.10.0",
+    "nodemon": "^3.1.4"
+  },
+  "name": "query-monitor-api",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Development for query API Dollars",
+  "main": "index.js",
+  "scripts": {
+    "start" : "node index.js",
+    "dev" : "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "VENEZUELA",
+    "BCV",
+    "PARALELO",
+    "SHONNYCOIN"
+  ],
+  "author": "Jonathan Torres",
+  "license": "ISC"
+}
