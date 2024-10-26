@@ -29,27 +29,22 @@ app.get('/prices', async (req, res) => {
 });
 
 app.get('/prices/:fecha', async (req, res) => {
-    const date = ((new Date(req.params.fecha)).toISOString()).toLocaleString('zh-TW');
+    const date = req.params.fecha;
     const { data, error } = await supabase
         .from('prices')
         .select('*')
-        .gte('created_at', date)
+        .order('id', { ascending: false })
+        .limit(1)
     res.send(data);
 });
 
-app.post('/prices', async (req, res) => {
-    const { error } = await supabase
+app.get('/prices-bcv', async (req, res) => {
+    const { data, error } = await supabase
         .from('prices')
-        .insert([{
-            dolarBCV: req.body.dolarBCV,
-            euroBCV: req.body.euroBCV,
-            dolarPAR: req.body.dolarPAR,
-            pesos_colombian: req.body.pesos_colombian
-        }]).select()
-    if (error) {
-        res.send(error);
-    }
-    res.send("created!!");
+        .select('dolarBCV, euroBCV, fecha')
+        .order('id', { ascending: false })
+        .limit(1)
+    res.send({ dollar : data[0].dolarBCV, euro: data[0].euroBCV, fecha: data[0].fecha });
 });
 
 app.get('/init', async (req, res) => {
@@ -84,6 +79,7 @@ app.get('/init', async (req, res) => {
     const { error } = await supabase
         .from('prices')
         .insert([{
+            fecha : new Date().toISOString().split('T')[0],
             dolarBCV: objTasas.dolarBCV,
             euroBCV: objTasas.euroBCV,
             dolarPAR: objTasas.dolarPAR,
@@ -106,25 +102,6 @@ app.get('/init', async (req, res) => {
     res.send("created!!");
 
 });
-
-
-/*
-app.put('/prices/:fecha', async (req, res) => {
-    const date = ((new Date(req.params.fecha)).toISOString()).toLocaleString('zh-TW');
-    const { error } = await supabase
-        .from('prices')
-        .update({
-            dolarBCV: req.body.dolarBCV,
-            euroBCV: req.body.euroBCV,
-            dolarPAR: req.body.dolarPAR,
-            pesos_colombian: req.body.pesos_colombian
-        })
-        .gte('created_at', date)
-    if (error) {
-        res.send(error);
-    }
-    res.send("updated!!");
-}); */
 
 app.get('/', (req, res) => {
     res.send("Good Morning, Corriendo el Proyecto :D");
