@@ -89,14 +89,14 @@ app.get('/init', async (req, res) => {
         res.send(error);
     }
 
-    /* ENVIAR MENSAJE AL TELEGRAM */
+    /* ENVIAR MENSAJE AL TELEGRAM 
     const todayIs = new Date()
     const urlTelegram = 'https://api.telegram.org/bot' + process.env.BOT_TELEGRAM + '/sendMessage?chat_id=' + process.env.CHAT_ID + '&parse_mode=Markdown&text=*TASAS-BCV* Actualizado la tasa del dia de hoy: ' + todayIs
     fetch(urlTelegram, { method: "GET"})
     .then((response) => response.json())
     .then((data) => {
         console.log('PETICION COMPLETADA: ', data);
-    });
+    }); */
 
 
     res.send("created!!");
