@@ -62,17 +62,18 @@ app.get('/init', async (req, res) => {
                 objTasas.euroBCV = data.euro
         });
 
+    /*
     await fetch(`${url}/dollar-paralelo`, { method: "GET" })
         .then((response) => response.json())
         .then((data) => {
             objTasas.dolarPAR = data.precio
-        });
-
+        }); */
+/*
     await fetch(`${url}/pesos-colombianos`, { method: "GET" })
         .then((response) => response.json())
         .then((data) => {
             objTasas.pesos_colombian = data.precio
-        });
+        }); */
 
     console.log('TENGO LAS TASAS: ', objTasas);
 
@@ -82,21 +83,21 @@ app.get('/init', async (req, res) => {
             fecha : new Date().toISOString().split('T')[0],
             dolarBCV: objTasas.dolarBCV,
             euroBCV: objTasas.euroBCV,
-            dolarPAR: objTasas.dolarPAR,
-            pesos_colombian: objTasas.pesos_colombian
+            dolarPAR: 0,
+            pesos_colombian: 0
         }]).select()
     if (error) {
         res.send(error);
     }
 
-    /* ENVIAR MENSAJE AL TELEGRAM 
+    /* ENVIAR MENSAJE AL TELEGRAM */
     const todayIs = new Date()
     const urlTelegram = 'https://api.telegram.org/bot' + process.env.BOT_TELEGRAM + '/sendMessage?chat_id=' + process.env.CHAT_ID + '&parse_mode=Markdown&text=*TASAS-BCV* Actualizado la tasa del dia de hoy: ' + todayIs
     fetch(urlTelegram, { method: "GET"})
     .then((response) => response.json())
     .then((data) => {
         console.log('PETICION COMPLETADA: ', data);
-    }); */
+    });
 
 
     res.send("created!!");
