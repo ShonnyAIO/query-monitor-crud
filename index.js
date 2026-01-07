@@ -33,7 +33,7 @@ app.get('/prices/:fecha', async (req, res) => {
     const { data, error } = await supabase
         .from('prices')
         .select('*')
-        .eq('fecha', date);
+        .eq('fecha', date)
         .order('id', { ascending: false })
         .limit(1)
     res.send(data);
