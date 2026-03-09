@@ -45,7 +45,7 @@ app.get('/prices-bcv', async (req, res) => {
         .select('dolarBCV, euroBCV, fecha')
         .order('id', { ascending: false })
         .limit(1)
-    res.send({ dollar : data[0].dolarBCV, euro: data[0].euroBCV, fecha: data[0].fecha });
+    res.send({ dollar: data[0].dolarBCV, euro: data[0].euroBCV, fecha: data[0].fecha });
 });
 
 app.get('/init', async (req, res) => {
@@ -69,37 +69,38 @@ app.get('/init', async (req, res) => {
         .then((data) => {
             objTasas.dolarPAR = data.precio
         }); */
-/*
-    await fetch(`${url}/pesos-colombianos`, { method: "GET" })
-        .then((response) => response.json())
-        .then((data) => {
-            objTasas.pesos_colombian = data.precio
-        }); */
+    /*
+        await fetch(`${url}/pesos-colombianos`, { method: "GET" })
+            .then((response) => response.json())
+            .then((data) => {
+                objTasas.pesos_colombian = data.precio
+            }); */
 
     console.log('TENGO LAS TASAS: ', objTasas);
 
     const { error } = await supabase
         .from('prices')
         .insert([{
-            fecha : new Date().toISOString().split('T')[0],
+            fecha: new Date().toISOString().split('T')[0],
             dolarBCV: objTasas.dolarBCV,
             euroBCV: objTasas.euroBCV,
             dolarPAR: 0,
             pesos_colombian: 0
         }]).select()
     if (error) {
-        res.send(error);
+        return res.status(500).send(error);
     }
 
     /* ENVIAR MENSAJE AL TELEGRAM */
     const todayIs = new Date()
     const urlTelegram = 'https://api.telegram.org/bot' + process.env.BOT_TELEGRAM + '/sendMessage?chat_id=' + process.env.CHAT_ID + '&parse_mode=Markdown&text=*TASAS-BCV* Actualizado la tasa del dia de hoy: ' + todayIs
-    fetch(urlTelegram, { method: "GET"})
-    .then((response) => response.json())
-    .then((data) => {
-        console.log('PETICION COMPLETADA: ', data);
-    });
-
+    try {
+        const telResponse = await fetch(urlTelegram, { method: "GET" });
+        const telData = await telResponse.json();
+        console.log('PETICION COMPLETADA: ', telData);
+    } catch (err) {
+        console.log('Error envoy telegram: ', err);
+    }
 
     res.send("created!!");
 
@@ -109,6 +110,10 @@ app.get('/', (req, res) => {
     res.send("Good Morning, Corriendo el Proyecto :D");
 });
 
-app.listen(process.env.PORT, () => {
-    console.log(`Corriendo en la siguiente URL: http://localhost:${process.env.PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(process.env.PORT || 3000, () => {
+        console.log(`Corriendo en la siguiente URL: http://localhost:${process.env.PORT || 3000}`);
+    });
+}
+
+export default app;
