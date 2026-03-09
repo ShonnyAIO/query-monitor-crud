@@ -7,6 +7,7 @@ import bodyParser from "body-parser";
 
 const app = express();
 configDotenv();
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; // Ignore invalid SSL certificates (e.g., from BCV)
 
 // using morgan for logs
 app.use(morgan('combined'));
